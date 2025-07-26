@@ -6,7 +6,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 from aiogram.client.default import DefaultBotProperties
 import os
-from app.handlers import menu, referral, support, start, reviews, top
+from app.handlers import menu, referral, support, start, reviews, top, profile, how_to_start
 
 
 load_dotenv()
@@ -27,6 +27,10 @@ async def main():
     dp.include_router(support.router)
     dp.include_router(reviews.router)
     dp.include_router(top.router)
+    dp.include_router(profile.router)
+    dp.include_router(how_to_start.router)
+
+
 
     # Регистрируем хендлеры (позже)
     
