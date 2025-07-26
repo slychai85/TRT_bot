@@ -18,8 +18,8 @@ def get_top_keyboard(current_view: str):
         builder.button(text="Лучшие за неделю", callback_data="top_week")
     else:
         builder.button(text="Общий ТОП", callback_data="top_all")
-    builder.button(text="← Меню", callback_data="menu")
     return builder.as_markup()
+
 
 # --- Команда ТОП ---
 @router.message(F.text == "🏆 Топ лучших")
@@ -59,7 +59,9 @@ async def send_top(message: Message, view: str = "all", user_id: int = None):
         current_in_top = False
 
         for i, user in enumerate(top_users, 1):
-            line = f"{i}. {user.full_name} — {user.referrals_count}"
+            name = user.full_name or user.username or "Без имени"
+            line = f"{i}. {name} — {user.referrals_count}"
+
             if user.telegram_id == (user_id or message.from_user.id):
                 line += " ✅"  # галочка
                 current_in_top = True
@@ -70,7 +72,8 @@ async def send_top(message: Message, view: str = "all", user_id: int = None):
             for index, user in enumerate(users, 1):
                 if user.telegram_id == current_user.telegram_id:
                     lines.append("...\n<b>Ваша позиция:</b>")
-                    lines.append(f"{index}. {current_user.full_name} — {current_user.referrals_count} ✅")
+                    name = current_user.full_name or current_user.username or "Вы"
+                    lines.append(f"{index}. {name} — {current_user.referrals_count} ✅")
                     break
 
         await message.answer("\n".join(lines), reply_markup=get_top_keyboard(view))
